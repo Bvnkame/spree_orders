@@ -22,14 +22,24 @@ Spree::Api::LineItemsController.class_eval do
         line_item_params[:options] || {}
         )
       if @line_item.errors.empty?
-         @status = [{ "messages" => "Add Box Successful"}]
+        @status = [{ "messages" => "Add Box Successful"}]
         render "spree/api/logger/log", status: 201
       else
         invalid_resource!(@line_item)
       end
     end
+  end
 
-    
+
+  def update
+    @line_item = find_line_item
+    if @order.contents.update_cart(line_items_attributes)
+      @line_item.reload
+      @status = [{ "messages" => "Update Box Successful"}]
+      render "spree/api/logger/log", status: 200
+    else
+      invalid_resource!(@line_item)
+    end
   end
 
   private
