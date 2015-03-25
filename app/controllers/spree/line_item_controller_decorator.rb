@@ -42,6 +42,21 @@ Spree::Api::LineItemsController.class_eval do
     end
   end
 
+  def destroy
+    @line_item = find_line_item
+    if @line_item
+      @line_item.destroy
+      @status = [{ "messages" => "Delete Box Successful"}]
+      render "spree/api/logger/log", status: 201
+    else
+      raise ActiveRecord::RecordNotFound, "Line item not found for box"
+    end
+    
+  end
+
+
+
+
   private
   def line_item_params
     # params.require(:order_type)

@@ -32,7 +32,6 @@ Spree::OrderContents.class_eval do
 
 	def grab_line_item_by_product(variant, raise_error = false, options = {})
 		line_item = order.find_line_item_by_product(variant, options)
-
 		if !line_item.present? && raise_error
 			raise ActiveRecord::RecordNotFound, "Line item not found for product"
 		end
@@ -42,6 +41,7 @@ Spree::OrderContents.class_eval do
 
 	def grab_line_item_by_box(variant, raise_error = false, options = {})
 		line_item = order.find_line_item_by_box(variant, options)
+		p line_item
 		if !line_item.present? && raise_error
 			raise ActiveRecord::RecordNotFound, "Line item not found for box"
 		end
