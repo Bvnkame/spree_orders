@@ -10,7 +10,6 @@ Spree::Api::LineItemsController.class_eval do
     if params[:line_item]['order_type'].downcase == "dish"
       variant = Spree::Product.find(params[:line_item][:product_id])
       options = {:delivery_date => line_item_params[:delivery_date]}
-      options = {:price => variant.dish_price}
       @line_item = order.contents.adddish(
         variant,
         params[:line_item][:quantity] || 1,
@@ -43,9 +42,9 @@ Spree::Api::LineItemsController.class_eval do
 
   def update
     @line_item = find_line_item
-    if @order.contents.update_cart(line_items_attributes)
+    if @line_item.update(line_item_params_for_update)
       @line_item.reload
-      @status = [{ "messages" => "Update Box Successful"}]
+      @status = [{ "messages" => "Update Line_Item in Order Successful"}]
       render "spree/api/logger/log", status: 200
     else
       invalid_resource!(@line_item)
@@ -74,6 +73,13 @@ Spree::Api::LineItemsController.class_eval do
       :order_type,
       :quantity,
       :product_id,
+      :delivery_date,
+      option: line_item_options)
+  end
+
+  def line_item_params_for_update
+    params.require(:line_item).permit(
+      :quantity,
       :delivery_date,
       option: line_item_options)
   end
