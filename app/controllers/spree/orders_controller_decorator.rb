@@ -1,4 +1,5 @@
 Spree::Api::OrdersController.class_eval do
+	include Spree::OrdersImporter
 	before_action :authenticate_user
 	def create
 		@order = find_cart_order
@@ -19,10 +20,4 @@ Spree::Api::OrdersController.class_eval do
 		end
 		respond_with(@order, default_template: :show_number, status: 201)
 	end
-
-
-	def find_cart_order
-		current_api_user ? current_api_user.orders.where(state: "cart").order(:created_at).last : nil
-	end
-
 end
