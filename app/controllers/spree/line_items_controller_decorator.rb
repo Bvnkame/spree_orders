@@ -1,8 +1,16 @@
 Spree::Api::LineItemsController.class_eval do
+
+  def index
+    @order = Spree::Order.where(number: order_id).first 
+    authorize! :read, @order
+    render "spree/api/line_items/index"
+  end
+
   def create
     if params[:line_item]['order_type'].downcase == "dish"
       variant = Spree::Product.find(params[:line_item][:product_id])
       options = {:delivery_date => line_item_params[:delivery_date]}
+      options = {:price => variant.dish_price}
       @line_item = order.contents.adddish(
         variant,
         params[:line_item][:quantity] || 1,

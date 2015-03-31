@@ -15,19 +15,31 @@ Spree::LineItem.class_eval do
 
       if currency
       	self.currency = currency
-      	self.price = 100
-        # self.price    = variant.price_in(currency).amount +
-         #                 variant.price_modifier_amount_in(currency, opts)
-       else
-         self.price = 100
-        # self.price    = variant.price +
-       #                 variant.price_modifier_amount(opts)
-     end
+        if product_item
+          self.price    = product_item.dish_price
+        else 
+          box_price = 0
+          box.products.each do |product|
+            box_price += product.dish_price
+          end
+          self.price = box_price
+        end
+      else
+        if product_item
+         self.price    = product_item.dish_price
+        else 
+          box_price = 0
+          box.products.each do |product|
+            box_price += product.dish_price
+          end
+          self.price = box_price
+        end
+      end
+      self.assign_attributes opts
+    end
 
-     self.assign_attributes opts
-   end
-   private 
-   def update_inventory
+    private 
+    def update_inventory
 	    	# if (changed? || target_shipment.present?) && self.order.has_checkout_step?("delivery")
 	     	#      Spree::OrderInventory.new(self.order, self).verify(target_shipment)
 				#    end
@@ -38,4 +50,4 @@ Spree::LineItem.class_eval do
   	     	#      recalculate_adjustments
   	     	#    end
         end
-end
+      end

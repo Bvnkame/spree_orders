@@ -20,4 +20,11 @@ Spree::Api::OrdersController.class_eval do
 		end
 		respond_with(@order, default_template: :show_number, status: 201)
 	end
+
+
+	def show
+		authorize! :show, @order, order_token
+    render "spree/api/orders/show", status: 201
+	end
+
 end

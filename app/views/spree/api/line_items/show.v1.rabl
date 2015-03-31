@@ -1,17 +1,14 @@
 object @line_item
 cache [I18n.locale, root_object]
-attributes *line_item_attributes
-node(:single_display_amount) { |li| li.single_display_amount.to_s }
-node(:display_amount) { |li| li.display_amount.to_s }
-node(:total) { |li| li.total }
+attributes :id, :product_id, :box_id, :quantity, :date_delivery, :price
 
 child :product_item => :product do
-	extends "spree/api/products/small_show"
+		attributes :id, :name
+		child(:images => :images) { extends "spree/api/images/show" }
 end
 
 child :box => :box do
-	extends "bm/show"
-end
-child :adjustments => :adjustments do
-  extends "spree/api/adjustments/show"
+	attributes :id, :name
+	node(:images) { "http://www.wbc.co.uk/13662_zoom-large-textured-hamper-box-red.jpg" }
+	child(:products => :products) { attributes :id}
 end
