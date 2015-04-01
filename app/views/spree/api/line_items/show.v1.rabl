@@ -1,6 +1,6 @@
 object @line_item
 cache [I18n.locale, root_object]
-attributes :id, :product_id, :box_id, :quantity, :date_delivery, :price
+attributes :id, :product_id, :box_id, :quantity, :delivery_date, :price
 
 child :product_item => :product do
 		attributes :id, :name

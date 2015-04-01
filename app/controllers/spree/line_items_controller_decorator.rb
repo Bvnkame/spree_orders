@@ -7,36 +7,29 @@ Spree::Api::LineItemsController.class_eval do
   end
 
   def create
-    if params[:line_item]['order_type'].downcase == "dish"
-      variant = Spree::Product.find(params[:line_item][:product_id])
-      options = {:delivery_date => line_item_params[:delivery_date]}
-      @line_item = order.contents.adddish(
-        variant,
-        params[:line_item][:quantity] || 1,
-        options || {}
-        )
-      if @line_item.errors.empty?
-        @status = [{ "messages" => "Add Dish Successful"}]
-        render "spree/api/logger/log", status: 201
-      else
-        invalid_resource!(@line_item)
-      end
-
-    elsif params[:line_item]['order_type'].downcase == "box"
-      variant = Bm::Box.find(params[:line_item][:product_id])
-      options = {:delivery_date => line_item_params[:delivery_date]}
-      @line_item = order.contents.addbox(
-        variant,
-        params[:line_item][:quantity] || 1,
-        options || {}
-        )
-      if @line_item.errors.empty?
-        @status = [{ "messages" => "Add Box Successful"}]
-        render "spree/api/logger/log", status: 201
-      else
-        invalid_resource!(@line_item)
+    Spree::LineItem.transaction do
+      line_item_params[:line_item].each do |param|
+        if param[:order_type].downcase == "dish"
+          variant = Spree::Product.find(param[:product_id])
+          options = {:delivery_date => param[:delivery_date]}
+          @line_item = order.contents.adddish(
+            variant,
+            param[:quantity] || 1,
+            options || {}
+            )
+        elsif param[:order_type].downcase == "box"
+          variant = Bm::Box.find(param[:product_id])
+          options = {:delivery_date => param[:delivery_date]}
+          @line_item = order.contents.addbox(
+            variant,
+            param[:quantity] || 1,
+            options || {}
+            )
+        end
       end
     end
+    @status = [{ "messages" => "Add Line Items in Order Successful"}]
+    render "spree/api/logger/log", status: 201
   end
 
 
@@ -55,7 +48,7 @@ Spree::Api::LineItemsController.class_eval do
     @line_item = find_line_item
     if @line_item
       @line_item.destroy
-      @status = [{ "messages" => "Delete Box Successful"}]
+      @status = [{ "messages" => "Delete Line Item in Order Successful"}]
       render "spree/api/logger/log", status: 201
     else
       raise ActiveRecord::RecordNotFound, "Line item not found for box"
@@ -63,18 +56,16 @@ Spree::Api::LineItemsController.class_eval do
     
   end
 
-
-
-
   private
   def line_item_params
     # params.require(:order_type)
-    params.require(:line_item).permit(
+    params.permit( :line_item => [
       :order_type,
       :quantity,
       :product_id,
       :delivery_date,
-      option: line_item_options)
+      option: line_item_options
+      ])
   end
 
   def line_item_params_for_update

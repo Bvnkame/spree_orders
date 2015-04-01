@@ -7,12 +7,9 @@ Spree::LineItem.class_eval do
 
  def options=(options={})
    return unless options.present?
-
-
       opts = options.dup # we will be deleting from the hash, so leave the caller's copy intact
 
       currency = opts.delete(:currency) || order.try(:currency)
-
       if currency
       	self.currency = currency
         if product_item
