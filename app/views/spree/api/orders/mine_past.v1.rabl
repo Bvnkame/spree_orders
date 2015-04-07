@@ -1,6 +1,6 @@
 object @past_line_items
 
-attributes :product_id, :box_id, :quantity, :price, :delivery_date
+attributes :id, :product_id, :box_id, :quantity, :price, :delivery_date
 
 child(:product_item => :product) do
 	attributes :id, :name
@@ -13,6 +13,7 @@ child(:box => :box) do
 end
 
 child( :order) do
+	node(:cart_number) {|p| p.number }
 	child(:ship_address) do
 		attributes :id, :user_name, :address1, :district, :city
 	end
