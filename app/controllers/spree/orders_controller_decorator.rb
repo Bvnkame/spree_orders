@@ -23,6 +23,15 @@ Spree::Api::OrdersController.class_eval do
 		respond_with(@order, default_template: :show_number, status: 201)
 	end
 
+	def update
+		find_order(true)
+		authorize! :update, @order, order_token
+		if @order.update(order_params)
+			@status = [ { "messages" => "Update Order Successful"}]
+			render "spree/api/logger/log", status: 200
+		end
+	end
+
 
 	def show
 		authorize! :show, @order, order_token
@@ -32,14 +41,14 @@ Spree::Api::OrdersController.class_eval do
 		authorize! :update, @order, order_token
 		@order.empty!
 		@status = [{ "messages" => "Empty All Line Item in"}]
-    render "spree/api/logger/log", status: 204
+		render "spree/api/logger/log", status: 204
 	end
 
 	def mine_past
 		if current_api_user.persisted?
 			@past_line_items = Spree::LineItem.select("spree_line_items.id, spree_line_items.quantity, spree_line_items.price, spree_line_items.delivery_date, spree_line_items.product_id,spree_line_items.box_id, spree_line_items.order_id, spree_orders.state, spree_orders.user_id")
 			.joins(:order).where(:spree_orders => {:state => "complete", :user_id => current_api_user.id})
-	
+			
 			render "spree/api/orders/mine_past"
 		else
 			render "spree/api/errors/unauthorized", status: :unauthorized
@@ -55,6 +64,12 @@ Spree::Api::OrdersController.class_eval do
 		else
 			render "spree/api/errors/unauthorized", status: :unauthorized
 		end
+	end
+
+
+	private 
+	def order_params
+		params.require(:order).permit(:time_delivery_id)
 	end
 
 end
