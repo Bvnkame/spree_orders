@@ -46,9 +46,8 @@ Spree::Api::OrdersController.class_eval do
 
 	def mine_past
 		if current_api_user.persisted?
-			@past_line_items = Spree::LineItem.select("spree_line_items.id, spree_line_items.quantity, spree_line_items.price, spree_line_items.delivery_date, spree_line_items.product_id,spree_line_items.box_id, spree_line_items.order_id, spree_orders.state, spree_orders.user_id")
-			.joins(:order).where(:spree_orders => {:state => "complete", :user_id => current_api_user.id})
-			
+			@past_orders = Spree::Order.where(:state => "complete")
+
 			render "spree/api/orders/mine_past"
 		else
 			render "spree/api/errors/unauthorized", status: :unauthorized
@@ -57,9 +56,7 @@ Spree::Api::OrdersController.class_eval do
 
 	def mine_upcoming
 		if current_api_user.persisted?
-			@upcoming_line_items = Spree::LineItem.select("spree_line_items.id, spree_line_items.quantity, spree_line_items.price, spree_line_items.delivery_date, spree_line_items.product_id,spree_line_items.box_id, spree_line_items.order_id, spree_orders.state, spree_orders.user_id")
-			.joins(:order).where(:spree_orders => {:state => "delivery", :user_id => current_api_user.id})
-			
+			@upcoming_orders = Spree::Order.where(:state => "delivery")
 			render "spree/api/orders/mine_upcoming"
 		else
 			render "spree/api/errors/unauthorized", status: :unauthorized
