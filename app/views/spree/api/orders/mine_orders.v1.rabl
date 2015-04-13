@@ -1,6 +1,6 @@
 object @orders
 
-attributes :id, :number
+attributes :id
 node(:order_number) { |p| p.number }
 node(:order_date){|p| p.updated_at }
 child(:ship_address) do
