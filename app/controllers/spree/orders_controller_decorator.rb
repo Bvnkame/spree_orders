@@ -2,7 +2,7 @@ Spree::Api::OrdersController.class_eval do
 	include Spree::OrdersImporter
 	require 'ostruct'
 	before_action :authenticate_user
-	before_action :find_order, except: [:create, :mine, :current, :index, :update, :mine_upcoming, :mine_past]
+	before_action :find_order, except: [:create, :mine, :current, :index, :update, :mine_upcoming, :mine_orders]
 	def create
 		@order = find_cart_order
 		unless @order
@@ -37,6 +37,7 @@ Spree::Api::OrdersController.class_eval do
 		authorize! :show, @order, order_token
 		render "spree/api/orders/show", status: 201
 	end
+
 	def empty
 		authorize! :update, @order, order_token
 		@order.empty!
@@ -44,11 +45,11 @@ Spree::Api::OrdersController.class_eval do
 		render "spree/api/logger/log", status: 204
 	end
 
-	def mine_past
+	def mine_orders
 		if current_api_user.persisted?
-			@past_orders = Spree::Order.where(:state => "complete")
+			@orders = Spree::Order.where(:user_id => current_api_user.id)
 
-			render "spree/api/orders/mine_past"
+			render "spree/api/orders/mine_orders"
 		else
 			render "spree/api/errors/unauthorized", status: :unauthorized
 		end
@@ -56,7 +57,7 @@ Spree::Api::OrdersController.class_eval do
 
 	def mine_upcoming
 		if current_api_user.persisted?
-			@upcoming_orders = Spree::Order.where(:state => "delivery")
+			@upcoming_orders = Spree::Order.where(:user_id => current_api_user.id)
 			render "spree/api/orders/mine_upcoming"
 		else
 			render "spree/api/errors/unauthorized", status: :unauthorized

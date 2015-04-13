@@ -1,4 +1,4 @@
-object @upcoming_orders
+object @orders
 
 attributes :id, :number
 node(:order_number) { |p| p.number }
@@ -11,5 +11,5 @@ child(:time_delivery) do
 end
 
 child :line_items => :line_items do
-	extends "spree/api/line_items/show", :if => lambda{|p| p.status === "delivery"}
+   extends "spree/api/line_items/show"
 end
