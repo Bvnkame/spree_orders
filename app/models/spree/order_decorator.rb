@@ -11,4 +11,11 @@ Spree::Order.class_eval do
 		}
 	end
 
+	def find_past_order
+		self.line_items.where(:status => "complete") 
+	end
+	def find_upcoming_order
+		self.line_items.where(:status => "delivery") 
+	end
+
 end
