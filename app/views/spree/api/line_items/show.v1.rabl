@@ -4,7 +4,7 @@ attributes :id, :product_id, :box_id, :quantity, :delivery_date, :price, :status
 
 child :product_item => :product do
 		attributes :id, :name
-		child(:images => :images) { extends "spree/api/images/show" }
+		child(:variant_images => :images) { extends "spree/api/images/show" }
 end
 
 child :box => :box do
