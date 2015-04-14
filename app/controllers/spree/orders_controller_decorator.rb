@@ -47,8 +47,7 @@ Spree::Api::OrdersController.class_eval do
 
 	def mine_orders
 		if current_api_user.persisted?
-			@orders = Spree::Order.where(:user_id => current_api_user.id)
-
+			@orders = Spree::Order.where(:user_id => current_api_user.id).where.not(:state => "cart")
 			render "spree/api/orders/mine_orders"
 		else
 			render "spree/api/errors/unauthorized", status: :unauthorized
@@ -57,7 +56,7 @@ Spree::Api::OrdersController.class_eval do
 
 	def mine_upcoming
 		if current_api_user.persisted?
-			@upcoming_orders = Spree::Order.where(:user_id => current_api_user.id)
+			@upcoming_orders = Spree::Order.where(:user_id => current_api_user.id).where.not(:state => "cart")
 			render "spree/api/orders/mine_upcoming"
 		else
 			render "spree/api/errors/unauthorized", status: :unauthorized
