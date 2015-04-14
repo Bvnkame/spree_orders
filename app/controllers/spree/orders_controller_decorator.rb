@@ -45,10 +45,10 @@ Spree::Api::OrdersController.class_eval do
 		render "spree/api/logger/log", status: 204
 	end
 
-	def mine_orders
+	def mine_past
 		if current_api_user.persisted?
-			@orders = Spree::Order.where(:user_id => current_api_user.id).where.not(:state => "cart")
-			render "spree/api/orders/mine_orders"
+			@past_orders = Spree::Order.where(:user_id => current_api_user.id).where.not(:state => "cart")
+			render "spree/api/orders/mine_past"
 		else
 			render "spree/api/errors/unauthorized", status: :unauthorized
 		end

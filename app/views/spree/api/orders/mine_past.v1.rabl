@@ -1,4 +1,4 @@
-object @orders
+object @past_orders
 
 attributes :id
 node(:order_number) { |p| p.number }
@@ -11,5 +11,5 @@ child(:time_delivery) do
 end
 
 child :line_items => :line_items do
-   extends "spree/api/line_items/show"
+	extends "spree/api/line_items/show", :if => lambda{|p| p.status === "complete"}
 end
