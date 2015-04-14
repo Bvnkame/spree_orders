@@ -10,6 +10,6 @@ child(:time_delivery) do
 	node(:time) { |p| p.delivery_time }
 end
 
-child :line_items => :line_items do
+child :line_items.where(:status => "delivery")=> :line_items do
 	extends "spree/api/line_items/show", :if => lambda{|p| p.status === "delivery"}
 end
