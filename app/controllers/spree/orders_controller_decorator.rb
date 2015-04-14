@@ -2,7 +2,7 @@ Spree::Api::OrdersController.class_eval do
 	include Spree::OrdersImporter
 	require 'ostruct'
 	before_action :authenticate_user
-	before_action :find_order, except: [:create, :mine, :current, :index, :update, :mine_upcoming, :mine_orders]
+	before_action :find_order, except: [:create, :mine, :current, :index, :update, :mine_upcoming, :mine_past]
 	def create
 		@order = find_cart_order
 		unless @order
@@ -29,7 +29,7 @@ Spree::Api::OrdersController.class_eval do
 		if @order.update(order_params)
 			@address = @order.ship_address
 			if @address.update(address_params)
-				@status = [ { "messages" => "Update Address Successful"}]
+				@status = [ { "messages" => "Update Address - Time Successful"}]
 				render "spree/api/logger/log", status: 200
 			end
 		end
