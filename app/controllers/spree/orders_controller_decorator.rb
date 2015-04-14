@@ -26,9 +26,9 @@ Spree::Api::OrdersController.class_eval do
 	def update
 		find_order(true)
 		authorize! :update, @order, order_token
-		if @order.update(order_update_params[:order])
+		if @order.update(order_params)
 			@address = @order.address
-			if @address.update(order_update_params[:address])
+			if @address.update(address_params)
 				@status = [ { "messages" => "Update Address Successful"}]
 				render "spree/api/logger/log", status: 200
 			end
@@ -70,8 +70,7 @@ Spree::Api::OrdersController.class_eval do
 	def order_params
 		params.require(:order).permit(:time_delivery_id)
 	end
-	def order_update_params
-		params.require(:order).permit(:time_delivery_id)
+	def address_params
 		params.require(:address).permit(:user_name, :address1, :phone, :city, :district)
 	end
 
