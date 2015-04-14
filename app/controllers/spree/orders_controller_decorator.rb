@@ -27,7 +27,7 @@ Spree::Api::OrdersController.class_eval do
 		find_order(true)
 		authorize! :update, @order, order_token
 		if @order.update(order_params)
-			@address = @order.address
+			@address = @order.ship_address
 			if @address.update(address_params)
 				@status = [ { "messages" => "Update Address Successful"}]
 				render "spree/api/logger/log", status: 200
