@@ -11,7 +11,7 @@ Spree::Api::LineItemsController.class_eval do
       line_item_params[:line_item].each do |param|
         if param[:order_type].downcase == "dish"
           variant = Spree::Product.find(param[:product_id])
-          options = {:delivery_date => param[:delivery_date]}
+          options = {:delivery_date => param[:delivery_date], :status => "cart"}
           @line_item = order.contents.adddish(
             variant,
             param[:quantity] || 1,
@@ -19,7 +19,7 @@ Spree::Api::LineItemsController.class_eval do
             )
         elsif param[:order_type].downcase == "box"
           variant = Bm::Box.find(param[:product_id])
-          options = {:delivery_date => param[:delivery_date]}
+          options = {:delivery_date => param[:delivery_date], :status => "cart"}
           @line_item = order.contents.addbox(
             variant,
             param[:quantity] || 1,
