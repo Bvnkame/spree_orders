@@ -2,7 +2,7 @@ Spree::Api::OrdersController.class_eval do
 	include Spree::OrdersImporter
 	require 'ostruct'
 	before_action :authenticate_user
-	before_action :find_order, except: [:create, :mine, :current, :index, :update, :mine_upcoming, :mine_past]
+	before_action :find_order, except: [:create, :mine, :current, :index, :update, :mine_upcoming, :mine_past, :place_order ]
 	def create
 		@order = find_cart_order
 		unless @order
@@ -63,6 +63,45 @@ Spree::Api::OrdersController.class_eval do
 		else
 			render "spree/api/errors/unauthorized", status: :unauthorized
 		end
+	end
+
+	def place_order
+		@order = Spree::Order.find_by!(number: params[:order_number])
+		authorize! :update, @order
+
+		@user = current_api_user
+
+		amount = @order.total_price
+
+		@payment = Spree::Payment.find_by!(order_id: @order.id)
+		if @payment.payment_type == "Cash"
+			@order.update(state: "delivery")
+			@order.line_items.update_all(status: "delivery")
+
+			@payment.update(amount: amount)
+			@status = [{ "messages" => "Place Order Successful!"}]
+			render "spree/api/logger/log", status: 200
+
+		elsif @payment.payment_type == "PrepaidCard"
+
+			@user_account =  @user.user_account
+			if amount <= @user_account.account
+				up_account = @user_account.account - @order.total_price
+				@user_account.update(account: up_account)
+
+				@order.update(state: "delivery")
+				@order.line_items.update_all(status: "delivery")
+
+				@payment.update(amount: amount, is_pay: true)
+				@status = [{ "messages" => "Place Order Successful!"}]
+				render "spree/api/logger/log", status: 200
+			else
+				@status = [{ "messages" => "Your Money in Prepaid Card is not enough!"}]
+				render "spree/api/logger/log", status: 406
+			end
+			
+		end
+
 	end
 
 
