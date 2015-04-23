@@ -67,6 +67,8 @@ Spree::Api::OrdersController.class_eval do
 
 	def place_order
 		@order = Spree::Order.find_by!(number: params[:order_number])
+		p "djfaksdjfkasd"
+		p @order
 		authorize! :update, @order
 
 		@user = current_api_user
