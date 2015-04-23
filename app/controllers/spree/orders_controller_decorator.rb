@@ -2,7 +2,7 @@ Spree::Api::OrdersController.class_eval do
 	include Spree::OrdersImporter
 	require 'ostruct'
 	before_action :authenticate_user
-	before_action :find_order, except: [:create, :mine, :current, :index, :update, :mine_upcoming, :mine_past, :place_order ]
+	before_action :find_order, except: [:create, :mine, :current, :index, :update, :mine_upcoming, :mine_past, :place_order
 	def create
 		@order = find_cart_order
 		unless @order
@@ -77,7 +77,7 @@ Spree::Api::OrdersController.class_eval do
 		@payment = Spree::Payment.find_by!(order_id: @order.id)
 		if @payment.payment_type == "Cash"
 			@order.update(state: "delivery")
-			@order.line_items.update_all(status: "delivery")
+			@order.line_items.update_all(status: "delivery", completed_at: Time.now)
 
 			@payment.update(amount: amount)
 			@status = [{ "messages" => "Place Order Successful!"}]
@@ -90,7 +90,7 @@ Spree::Api::OrdersController.class_eval do
 				up_account = @user_account.account - @order.total_price
 				@user_account.update(account: up_account)
 
-				@order.update(state: "delivery")
+				@order.update(state: "delivery", completed_at: Time.now)
 				@order.line_items.update_all(status: "delivery")
 
 				@payment.update(amount: amount, is_pay: true)

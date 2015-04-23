@@ -2,7 +2,7 @@ object @past_orders
 
 attributes :id
 node(:order_number) { |p| p.number }
-node(:order_date){|p| p.updated_at }
+node(:order_date){|p| p.completed_at }
 child(:ship_address) do
 		attributes :id, :user_name, :address1, :district, :city
 	end
