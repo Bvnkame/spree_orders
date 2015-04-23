@@ -2,7 +2,8 @@ Spree::Api::OrdersController.class_eval do
 	include Spree::OrdersImporter
 	require 'ostruct'
 	before_action :authenticate_user
-	before_action :find_order, except: [:create, :mine, :current, :index, :update, :mine_upcoming, :mine_past, :place_order
+	before_action :find_order, except: [:create, :mine, :current, :index, :update, :mine_upcoming, :mine_past, :place_order]
+	
 	def create
 		@order = find_cart_order
 		unless @order
