@@ -81,8 +81,9 @@ Spree::Api::OrdersController.class_eval do
 			@order.line_items.update_all(status: "delivery", completed_at: Time.now)
 
 			@payment.update(amount: amount)
-			@status = [{ "messages" => "Place Order Successful!"}]
-			render "spree/api/logger/log", status: 200
+			@order = create_order(@user)
+
+			render "spree/api/paypal_payment/placeorder", status: 200
 
 		elsif @payment.payment_type == "PrepaidCard"
 
@@ -95,8 +96,8 @@ Spree::Api::OrdersController.class_eval do
 				@order.line_items.update_all(status: "delivery")
 
 				@payment.update(amount: amount, is_pay: true)
-				@status = [{ "messages" => "Place Order Successful!"}]
-				render "spree/api/logger/log", status: 200
+				@order = create_order(@user)
+				render "spree/api/paypal_payment/placeorder", status: 200
 			else
 				@status = [{ "messages" => "Your Money in Prepaid Card is not enough!"}]
 				render "spree/api/logger/log", status: 406
