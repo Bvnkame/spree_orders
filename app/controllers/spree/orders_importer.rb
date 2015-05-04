@@ -6,6 +6,8 @@ module Spree
 		end
 
 		def find_cart_order_login(user)
+			p "cart in login method"
+			p user
 			@order = user ? user.orders.where(state: "cart").order(:created_at).last : nil
 		end
 		def create_order(user)
@@ -15,6 +17,7 @@ module Spree
 				import_params = {}
 				@order = Spree::Core::Importer::Order.import(order_user, import_params)
 			end
+			p @order
 			@order
 		end
 	end
