@@ -16,11 +16,6 @@ Spree::Order.class_eval do
 
 
 	def generate_order_number(options = {})
-
-		p "self"
-		p self
-		p self.class
-		p "self"
     options[:length]  ||= ORDER_NUMBER_LENGTH
     options[:letters] ||= ORDER_NUMBER_LETTERS
     options[:prefix]  ||= ORDER_NUMBER_PREFIX
