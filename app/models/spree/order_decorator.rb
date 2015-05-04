@@ -12,7 +12,6 @@ Spree::Order.class_eval do
   	@order.state = "cart"
 
   	@order.save!
-
   	@order
   end
 
