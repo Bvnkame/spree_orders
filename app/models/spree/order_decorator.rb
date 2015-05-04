@@ -39,7 +39,6 @@ Spree::Order.class_eval do
         break random
       end
     end
-    # self.number = random
   end
 
 	def total_price
