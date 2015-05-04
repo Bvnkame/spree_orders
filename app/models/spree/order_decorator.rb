@@ -4,6 +4,16 @@ Spree::Order.class_eval do
   ORDER_NUMBER_LETTERS = false
   ORDER_NUMBER_PREFIX  = 'R'
 
+  def self.new_order(user)
+  	@order = Spree::Order.new
+
+  	@order.generate_order_number
+  	@order.user = user
+  	@order.state = "cart"
+
+  	@order.save!
+  end
+
 
 	def generate_order_number(options = {})
     options[:length]  ||= ORDER_NUMBER_LENGTH
@@ -24,6 +34,7 @@ Spree::Order.class_eval do
         break random
       end
     end
+    self.number = random
   end
 
 	def total_price
