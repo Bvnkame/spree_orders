@@ -84,7 +84,7 @@ Spree::Api::OrdersController.class_eval do
 				@order.line_items.update_all(status: "delivery")
 
 				@payment.update(amount: amount, is_pay: true)
-				@order = create_order(@user)
+				@order = Spree::Order.new_order(@user)
 				render "spree/api/paypal_payment/placeorder", status: 200
 			else
 				@status = [{ "messages" => "Your Money in Prepaid Card is not enough!"}]
