@@ -26,6 +26,8 @@ Spree::Api::LineItemsController.class_eval do
             options || {}
             )
         end
+        order.total = order.total_price
+        order.save
       end
     end
     @status = [{ "messages" => "Add Line Items in Order Successful"}]

@@ -14,7 +14,7 @@ Spree::OrderContents.class_eval do
 			price: variant.dish_price,
 			currency: variant.dish_currency,
 			status: "cart",
-			options: opts)
+			options: options)
 		line_item.save
 		line_item
 	end 
@@ -25,7 +25,7 @@ Spree::OrderContents.class_eval do
 			price: variant.total_price,
 			currency: variant.products.first.dish_currency,
 			status: "cart",
-			options: opts)
+			options: options)
 		line_item.save!
 		line_item
 	end 
