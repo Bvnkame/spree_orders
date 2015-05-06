@@ -10,7 +10,7 @@ Spree::Order.class_eval do
   	@order.generate_order_number
   	@order.user = user
   	@order.state = "cart"
-
+    @order.currency = "VND"
   	@order.save!
   	@order
   end
