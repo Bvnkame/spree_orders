@@ -44,6 +44,16 @@ Spree::Api::LineItemsController.class_eval do
     end
   end
 
+  def update_status
+    @order = Spree::Order.find_by(number: params[:order_number])
+    authorize! :update, @order
+
+    @line_items = @order.line_items.where(deliery_date: line_item_params_for_change_status[:delivery_date])
+    @line_items.update_all(status: "cart")
+    @status = [{ "messages" => "Update Status Successful"}]
+    render "spree/api/logger/log", status: 201
+  end
+
   def destroy
     @line_item = find_line_item
     if @line_item
@@ -73,5 +83,10 @@ Spree::Api::LineItemsController.class_eval do
       :quantity,
       :delivery_date,
       option: line_item_options)
+  end
+  def line_item_params_for_change_status
+    params.require(:line_item).permit(
+      :status,
+      :delivery_date)
   end
 end
