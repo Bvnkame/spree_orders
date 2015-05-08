@@ -48,7 +48,7 @@ Spree::Api::LineItemsController.class_eval do
     @order = Spree::Order.find_by(number: params[:order_number])
     authorize! :update, @order
 
-    @line_items = @order.line_items.where(deliery_date: line_item_params_for_change_status[:delivery_date])
+    @line_items = @order.line_items.where(delivery_date: line_item_params_for_change_status[:delivery_date])
     @line_items.update_all(status: line_item_params_for_change_status[:status].downcase)
     @status = [{ "messages" => "Update Status Successful"}]
     render "spree/api/logger/log", status: 201
