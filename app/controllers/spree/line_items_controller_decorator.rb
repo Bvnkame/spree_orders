@@ -50,6 +50,14 @@ Spree::Api::LineItemsController.class_eval do
 
     @line_items = @order.line_items.where(delivery_date: line_item_params_for_change_status[:delivery_date])
     @line_items.update_all(status: line_item_params_for_change_status[:status].downcase)
+
+    items_count = @order.line_items.count
+    complete_items_count = @order.line_items.where(status: "complete").count
+
+    if items_count == complete_items_count
+      @order.update(state: "complete")
+    end
+
     @status = [{ "messages" => "Update Status Successful"}]
     render "spree/api/logger/log", status: 201
   end
