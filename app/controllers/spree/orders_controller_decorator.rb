@@ -65,8 +65,8 @@ Spree::Api::OrdersController.class_eval do
 
 		@payment = Spree::Payment.find_by!(order_id: @order.id)
 		if @payment.payment_type == "Cash"
-			@order.update(state: "delivery")
-			@order.line_items.update_all(status: "delivery", completed_at: Time.now)
+			@order.update(state: "delivery", completed_at: Time.now )
+			@order.line_items.update_all(status: "delivery")
 
 			@payment.update(amount: amount)
 			@order = Spree::Order.new_order(@user)
